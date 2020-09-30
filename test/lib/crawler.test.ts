@@ -6,7 +6,7 @@ import { crawler } from '../../index';
 dotenv.config();
 
 describe('crawler.test.ts', () => {
-  test('screenshot', async (done) => {
+  test('screenshot', async done => {
 
     const targetUrl = 'https://www.google.com';
     const targetPath = path.join(__dirname, '..', 'data/google.png');
@@ -18,5 +18,5 @@ describe('crawler.test.ts', () => {
 
     expect(fs.existsSync(targetPath)).toEqual(true);
     done();
-  }, 60*1000);
+  }, 60 * 1000);
 });

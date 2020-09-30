@@ -34,5 +34,5 @@ export const publish = async (data: any) => {
   });
 
   debug('publishResult', publishResult);
-  return publishResult;  
+  return publishResult;
 };

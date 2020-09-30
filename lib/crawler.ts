@@ -3,14 +3,14 @@ import puppeteer from 'puppeteer';
 
 const debug = Debug('etf-crawler');
 
-export type MediaType = "screen" | "print";
+export type MediaType = 'screen' | 'print';
 
 interface ScreenshotOptions {
   targetUrl: string;
   targetPath: string;
   mediaType?: MediaType | null;
   targetSelector?: string;
-  removeSelector?: string;  
+  removeSelector?: string;
 }
 
 export const screenshot = async (options: ScreenshotOptions) => {
@@ -18,7 +18,7 @@ export const screenshot = async (options: ScreenshotOptions) => {
 
   const browser = await puppeteer.launch({
     headless: true,
-    timeout: 0,    
+    timeout: 0,
     defaultViewport: {
       width: 1366,
       height: 768,
@@ -29,7 +29,7 @@ export const screenshot = async (options: ScreenshotOptions) => {
     ],
   });
 
-  try {    
+  try {
     const page = await browser.newPage();
 
     await page.goto(targetUrl, {
@@ -37,11 +37,11 @@ export const screenshot = async (options: ScreenshotOptions) => {
       timeout: 0,
     });
 
-    if(mediaType) {
+    if (mediaType) {
       await page.emulateMediaType(mediaType);
     }
-    
-    if (!!removeSelector) {
+
+    if (removeSelector) {
       await page.evaluate(sel => {
         const elements = document.querySelectorAll(sel);
         for (let i = 0; i < elements.length; i++) {
@@ -50,7 +50,7 @@ export const screenshot = async (options: ScreenshotOptions) => {
       }, removeSelector);
     }
 
-    if (!!targetSelector) {
+    if (targetSelector) {
       const selector = await page.$(targetSelector);
 
       if (!selector) return;
@@ -60,7 +60,7 @@ export const screenshot = async (options: ScreenshotOptions) => {
       });
 
       debug('screenshot.done');
-      await browser.close();      
+      await browser.close();
       return;
     }
 
@@ -68,10 +68,10 @@ export const screenshot = async (options: ScreenshotOptions) => {
       path: targetPath,
       fullPage: true,
     });
-  
+
     debug('screenshot.done');
     await browser.close();
-    
+
   } catch (error) {
     debug('screenshot.error', error);
     await browser.close();
