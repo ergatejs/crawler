@@ -97,4 +97,4 @@ yarn.lock
 !jest.config.js
 !.eslintrc.js
 
-data/
+**/*.png

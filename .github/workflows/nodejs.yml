@@ -1,0 +1,50 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Node.js CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    - cron: '0 2 * * *'
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [12]
+        os: [ubuntu-latest]
+
+    steps:
+    - name: Checkout Git Source
+      uses: actions/checkout@v2
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install Dependencies
+      run: npm i -g npminstall && npminstall
+
+    - name: Continuous Integration
+      env:        
+        ACCOUNT_HOST: ${{ secrets.ACCOUNT_HOST }}
+        ACCOUNT_EMAIL: ${{ secrets.ACCOUNT_EMAIL }}
+        ACCOUNT_PASSWORD: ${{ secrets.ACCOUNT_PASSWORD }}
+        OSS_REGION: ${{ secrets.OSS_REGION }}
+        OSS_BUCKET: ${{ secrets.OSS_BUCKET }}
+        OSS_ACCESS_ID: ${{ secrets.OSS_ACCESS_ID }}
+        OSS_ACCESS_SECRET: ${{ secrets.OSS_ACCESS_SECRET }}
+      run: npm run ci
+
+    - name: Code Coverage
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}

@@ -1,7 +1,10 @@
+import Debug from 'debug';
 import urllib from 'urllib';
-import { HOST } from './constants';
 
-export default async (data: any) => {
+const debug = Debug('etf-crawler');
+
+export const publish = async (data: any) => {
+  const HOST = process.env.ACCOUNT_HOST || 'https://f.implements.io';
 
   const authResult = await urllib.request(`${HOST}/auth/login`, {
     method: 'POST',
@@ -13,9 +16,7 @@ export default async (data: any) => {
     contentType: 'json',
   });
 
-  // console.log('===authResult', authResult);
-  console.log('===authResult', authResult.data);
-
+  debug('authResult', authResult);
   const { data: { token } } = authResult.data;
 
   if (!token) {
@@ -32,6 +33,6 @@ export default async (data: any) => {
     },
   });
 
-  // console.log('===publishResult', publishResult);
-  console.log('===publishResult', publishResult.data);
+  debug('publishResult', publishResult);
+  return publishResult;  
 };

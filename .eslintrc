@@ -2,6 +2,8 @@
   "extends": "eslint-config-egg/typescript",
   "plugins": [ "jest" ],
   "env": {
+    "browser": true,
+    "node": true,
     "jest/globals": true
   },
   "parserOptions": {
