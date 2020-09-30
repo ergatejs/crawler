@@ -9,7 +9,7 @@ on:
   pull_request:
     branches: [ master ]
   schedule:
-    - cron: '0 2 * * *'
+    - cron: '0 9 * * *'
 
 jobs:
   build:
@@ -34,7 +34,8 @@ jobs:
       run: npm i -g npminstall && npminstall
 
     - name: Continuous Integration
-      env:        
+      env:
+        DEBUG: etf-crawler        
         ACCOUNT_HOST: ${{ secrets.ACCOUNT_HOST }}
         ACCOUNT_EMAIL: ${{ secrets.ACCOUNT_EMAIL }}
         ACCOUNT_PASSWORD: ${{ secrets.ACCOUNT_PASSWORD }}
