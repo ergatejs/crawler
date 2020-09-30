@@ -1,38 +1,54 @@
 import Debug from 'debug';
 import puppeteer from 'puppeteer';
-
 const debug = Debug('etf-crawler');
 
-export type MediaType = 'screen' | 'print';
+type MediaType = 'screen' | 'print';
 
-interface ScreenshotOptions {
-  targetUrl: string;
+export interface Crawler {
+  url: string;
   targetPath: string;
-  mediaType?: MediaType | null;
+  targetAsset: string;
+
   targetSelector?: string;
-  removeSelector?: string;
+  trashSelectors?: any;
+
+  proxy?: string;
+  mediaType?: MediaType | null;
 }
 
-export const screenshot = async (options: ScreenshotOptions) => {
-  const { targetUrl, targetSelector, targetPath, removeSelector, mediaType } = options;
+export const screenshot = async (options: Crawler) => {
+  const {
+    url,
+    targetPath,
+    trashSelectors,
+    targetSelector,
+    proxy,
+    mediaType,
+  } = options;
+
+  const args = [
+    '--start-fullscree',
+  ];
+
+  if (proxy) {
+    args.push(proxy);
+  }
 
   const browser = await puppeteer.launch({
-    headless: true,
+    args,
     timeout: 0,
+    headless: true,
+    // headless: false,
     defaultViewport: {
       width: 1366,
       height: 768,
     },
-    args: [
-      // '--proxy-server=http://127.0.0.1:1087',
-      '--start-fullscree',
-    ],
   });
 
   try {
     const page = await browser.newPage();
 
-    await page.goto(targetUrl, {
+    await page.goto(url, {
       waitUntil: 'load',
       timeout: 0,
     });
@@ -41,13 +57,27 @@ export const screenshot = async (options: ScreenshotOptions) => {
       await page.emulateMediaType(mediaType);
     }
 
-    if (removeSelector) {
-      await page.evaluate(sel => {
-        const elements = document.querySelectorAll(sel);
-        for (let i = 0; i < elements.length; i++) {
-          elements[i].parentNode.removeChild(elements[i]);
+    if (trashSelectors) {
+
+      if (typeof trashSelectors === 'string') {
+        await page.evaluate(sel => {
+          const elements = document.querySelectorAll(sel);
+          for (let i = 0; i < elements.length; i++) {
+            elements[i].parentNode.removeChild(elements[i]);
+          }
+        }, trashSelectors);
+      }
+
+      if (Array.isArray(trashSelectors)) {
+        for (const item of trashSelectors) {
+          await page.evaluate(sel => {
+            const elements = document.querySelectorAll(sel);
+            for (let i = 0; i < elements.length; i++) {
+              elements[i].parentNode.removeChild(elements[i]);
+            }
+          }, item);
         }
-      }, removeSelector);
+      }
     }
 
     if (targetSelector) {

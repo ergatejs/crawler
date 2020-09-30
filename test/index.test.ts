@@ -1,41 +1,28 @@
-import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
-import { format } from '../lib/util';
 
-import { fans, crawler, client } from '../index';
+import { strategies, fans, crawler, client, util } from '../index';
 
 dotenv.config();
 
+const timeout = 5 * 60 * 1000;
+const baseDir = path.join(__dirname, 'data');
+
 describe('index.test.ts', () => {
-  test('run', async done => {
-
-    const baseDir = __dirname;
-    const timestamps = Date.now();
-
+  test('support', async done => {
     const run = async (stock: string) => {
-      const targetName = `${timestamps}.${stock}.png`;
-      const targetPath = path.join(baseDir, 'data', targetName);
-      const targetAsset = path.join('assets', targetName);
-      const targetUrl = `https://www.barchart.com/stocks/quotes/${stock}/cheat-sheet`;
-
-      // const targetSelector = '#main-content-column .column-inner';
-      const removeSelector = '#ic_desktop_adhesion';
-
-      await crawler.screenshot({
-        targetUrl,
-        targetPath,
-
-        // targetSelector,
-        removeSelector,
-
-        mediaType: 'print',
+      const strategy = strategies.getStrategy({
+        stock,
+        baseDir,
+        strategy: 'support',
       });
 
-      const assetUrl = await client.upload(targetAsset, targetPath);
+      await crawler.screenshot(strategy);
+
+      const assetUrl = await client.upload(strategy.targetAsset, strategy.targetPath);
 
       const postData = {
-        title: `${format()} - ${stock} - Resistance & Support Point`,
+        title: `${util.format()} - ${stock} - Resistance & Support Point`,
         tag_id: 'd6c6af85-9a2e-4ae5-87b1-eb16c141ff43',
         content: `![](${assetUrl})`,
       };
@@ -47,6 +34,34 @@ describe('index.test.ts', () => {
     await run('TSLA');
 
     done();
-  }, 5 * 60 * 1000);
+  }, timeout);
+
+
+  test('Short Volumes', async done => {
+    const run = async (stock: string) => {
+      const strategy = strategies.getStrategy({
+        stock,
+        baseDir,
+        strategy: 'short',
+      });
+
+      await crawler.screenshot(strategy);
+
+      const assetUrl = await client.upload(strategy.targetAsset, strategy.targetPath);
+
+      const postData = {
+        title: `${util.format()} - ${stock} - Short Volumes`,
+        tag_id: 'd6c6af85-9a2e-4ae5-87b1-eb16c141ff43',
+        content: `![](${assetUrl})`,
+      };
+
+      await fans.publish(postData);
+    };
+
+    await run('AMZN');
+    await run('TSLA');
+
+    done();
+  }, timeout);
 });
 

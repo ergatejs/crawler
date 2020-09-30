@@ -1,22 +1,38 @@
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
-import { crawler } from '../../index';
+
+import { crawler, strategies } from '../../index';
+
+const timeout = 5 * 60 * 1000;
+const baseDir = path.join(__dirname, '../data');
 
 dotenv.config();
 
 describe('crawler.test.ts', () => {
-  test('screenshot', async done => {
-
-    const targetUrl = 'https://www.google.com';
-    const targetPath = path.join(__dirname, '..', 'data/google.png');
-
-    await crawler.screenshot({
-      targetUrl,
-      targetPath,
+  test.skip('support', async done => {
+    const strategy = strategies.getStrategy({
+      stock: 'TSLA',
+      baseDir,
+      strategy: 'support',
     });
 
-    expect(fs.existsSync(targetPath)).toEqual(true);
+    await crawler.screenshot(strategy);
+
+    expect(fs.existsSync(strategy.targetPath)).toEqual(true);
     done();
-  }, 60 * 1000);
+  }, timeout);
+
+  test.skip('short', async done => {
+    const strategy = strategies.getStrategy({
+      stock: 'TSLA',
+      baseDir,
+      strategy: 'short',
+    });
+
+    await crawler.screenshot(strategy);
+
+    expect(fs.existsSync(strategy.targetPath)).toEqual(true);
+    done();
+  }, timeout);
 });
