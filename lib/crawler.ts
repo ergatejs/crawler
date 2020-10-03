@@ -50,7 +50,7 @@ export const load = async (options: LoadOption) => {
 
     // page.on('console', msg => console.log(msg.text()));
 
-    await page.goto(url, {      
+    await page.goto(url, {
       waitUntil: 'load',
       // waitUntil: 'domcontentloaded',
       timeout: 0,
@@ -70,7 +70,7 @@ export const load = async (options: LoadOption) => {
     const data = await dataHandle.jsonValue();
 
     debug('===data', data);
-    
+
     await execHandle.dispose();
     await dataHandle.dispose();
 

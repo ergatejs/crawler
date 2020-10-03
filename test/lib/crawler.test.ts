@@ -9,10 +9,9 @@ const baseDir = path.join(__dirname, '../data');
 
 dotenv.config();
 
-
 describe('crawler.test.ts', () => {
 
-  test('support', async done => {
+  test.skip('support', async done => {
     const strategy = strategies.getStrategy({
       baseDir,
       stock: 'TSLA',

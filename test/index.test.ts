@@ -37,7 +37,7 @@ describe('index.test.ts', () => {
   }, timeout);
 
 
-  test.skip('Short Volumes', async done => {
+  test('Short Volumes', async done => {
     const run = async (stock: string) => {
       const strategy = strategies.getStrategy({
         stock,
@@ -50,7 +50,7 @@ describe('index.test.ts', () => {
       if (strategy.screenshot) {
         const assetUrl = await storage.upload(strategy.screenshot.asset, strategy.screenshot.target);
         const postData = {
-          title: `${util.format()} - ${stock} - Resistance & Support Point`,
+          title: `${util.format()} - ${stock} - Short Volumes`,
           tag_id: 'd6c6af85-9a2e-4ae5-87b1-eb16c141ff43',
           content: `![](${assetUrl})`,
         };
