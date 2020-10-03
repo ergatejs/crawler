@@ -24,7 +24,7 @@ export const getStrategy = (option: Options): LoadOption => {
       },
 
       screenshot: {
-        selector: '#main-content-column > .column-inner',
+        selector: '#main-content-column',
         asset: path.join('assets', `${targetStock}.support.${timestamps}.png`),
         target: path.join(baseDir, `${targetStock}.support.${timestamps}.png`),
       },
