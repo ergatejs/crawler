@@ -92,9 +92,15 @@ typings/
 *.d.ts
 *.d.ts.map
 
+**/*.png
+
+# lockfile
 yarn.lock
 
+# config
 !jest.config.js
 !.eslintrc.js
 
-**/*.png
+# script
+!lib/script/short.js
+!lib/script/support.js
