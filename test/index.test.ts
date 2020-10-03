@@ -9,7 +9,7 @@ const timeout = 5 * 60 * 1000;
 const baseDir = path.join(__dirname, 'data');
 
 describe('index.test.ts', () => {
-  test.skip('Resistance & Support Point', async done => {
+  test('Resistance & Support Point', async done => {
     const run = async (stock: string) => {
       const strategy = strategies.getStrategy({
         stock,
