@@ -1,14 +1,14 @@
 import Debug from 'debug';
 import oss from 'ali-oss';
 
-const debug = Debug('etf-crawler');
+const debug = Debug('@ergatejs/crawler');
 
 export const upload = async (targetAsset: string, targetPath: string) => {
   const client = new oss({
-    region: process.env.OSS_REGION || '',
-    accessKeyId: process.env.OSS_ACCESS_ID || '',
-    accessKeySecret: process.env.OSS_ACCESS_SECRET || '',
-    bucket: process.env.OSS_BUCKET || '',
+    bucket: process.env.ALIYUN_OSS_BUCKET || '',
+    region: process.env.ALIYUN_OSS_REGION || '',
+    accessKeyId: process.env.ALIYUN_OSS_ACCESS_ID || '',
+    accessKeySecret: process.env.ALIYUN_OSS_ACCESS_SECRET || '',
     secure: true,
   });
 

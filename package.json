@@ -1,7 +1,7 @@
 {
-  "name": "etf-crawler",
+  "name": "@ergatejs/crawler",
   "version": "1.0.0",
-  "description": "etf crawler",
+  "description": "crawler for etf",
   "main": "index.js",
   "scripts": {    
     "build": "tsc",

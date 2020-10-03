@@ -1,31 +1,31 @@
+import fs from 'fs';
 import Debug from 'debug';
 import puppeteer from 'puppeteer';
-const debug = Debug('etf-crawler');
 
-type MediaType = 'screen' | 'print';
+const debug = Debug('@ergatejs/crawler');
 
-export interface Crawler {
+export interface LoadOption {
   url: string;
-  targetPath: string;
-  targetAsset: string;
-
-  targetSelector?: string;
-  trashSelectors?: any;
-
+  script: string;
   proxy?: string;
-  mediaType?: MediaType | null;
+
+  // loaddata
+  loaddata?: {
+    target: string;
+  };
+
+  // screenshot
+  screenshot?: {
+    selector?: string;
+    asset: string;
+    target: string;
+  };
 }
 
-export const screenshot = async (options: Crawler) => {
-  const {
-    url,
-    targetPath,
-    trashSelectors,
-    targetSelector,
-    proxy,
-    mediaType,
-  } = options;
+export const load = async (options: LoadOption) => {
+  const { url, script, proxy, screenshot, loaddata } = options;
 
+  // launch args
   const args = [
     '--start-fullscree',
   ];
@@ -34,11 +34,11 @@ export const screenshot = async (options: Crawler) => {
     args.push(proxy);
   }
 
+  // launch
   const browser = await puppeteer.launch({
     args,
     timeout: 0,
     headless: true,
-    // headless: false,
     defaultViewport: {
       width: 1366,
       height: 768,
@@ -48,62 +48,55 @@ export const screenshot = async (options: Crawler) => {
   try {
     const page = await browser.newPage();
 
+    page.on('console', msg => console.log(msg.text()));
+
     await page.goto(url, {
       waitUntil: 'load',
       timeout: 0,
     });
 
-    if (mediaType) {
-      await page.emulateMediaType(mediaType);
-    }
+    // add custom script
+    const content = fs.readFileSync(script).toString();
+    debug('===content', content);
 
-    if (trashSelectors) {
+    await page.addScriptTag({
+      content,
+    });
 
-      if (typeof trashSelectors === 'string') {
-        await page.evaluate(sel => {
-          const elements = document.querySelectorAll(sel);
-          for (let i = 0; i < elements.length; i++) {
-            elements[i].parentNode.removeChild(elements[i]);
-          }
-        }, trashSelectors);
-      }
+    // run custom script
+    const execHandle = await page.evaluateHandle(() => (window as any).execStrategy);
+    const dataHandle = await page.evaluateHandle(exec => exec(), execHandle);
+    const data = await dataHandle.jsonValue();
 
-      if (Array.isArray(trashSelectors)) {
-        for (const item of trashSelectors) {
-          await page.evaluate(sel => {
-            const elements = document.querySelectorAll(sel);
-            for (let i = 0; i < elements.length; i++) {
-              elements[i].parentNode.removeChild(elements[i]);
-            }
-          }, item);
-        }
-      }
-    }
+    debug('===data', data);
 
-    if (targetSelector) {
-      const selector = await page.$(targetSelector);
+    await execHandle.dispose();
+    await dataHandle.dispose();
+
+    // screenshot
+    if (screenshot) {
+      const selector = screenshot.selector ? await page.$(screenshot.selector) : page;
 
       if (!selector) return;
 
       await selector.screenshot({
-        path: targetPath,
+        path: screenshot.target,
+        fullPage: true,
       });
-
-      debug('screenshot.done');
-      await browser.close();
-      return;
     }
 
-    await page.screenshot({
-      path: targetPath,
-      fullPage: true,
-    });
+    // loaddata
+    if (loaddata) {
+      if (loaddata.target) {
+        fs.writeFileSync(loaddata.target, JSON.stringify(data, null, 2));
+      }
+    }
 
-    debug('screenshot.done');
     await browser.close();
 
+    return data;
   } catch (error) {
-    debug('screenshot.error', error);
+    debug('crawler.load.error', error);
     await browser.close();
   }
 };

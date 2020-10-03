@@ -1,16 +1,16 @@
 import Debug from 'debug';
 import urllib from 'urllib';
 
-const debug = Debug('etf-crawler');
+const debug = Debug('@ergatejs/crawler');
 
 export const publish = async (data: any) => {
-  const HOST = process.env.ACCOUNT_HOST || 'https://f.implements.io';
+  const HOST = process.env.F_ACCOUNT_HOST || 'https://f.implements.io';
 
   const authResult = await urllib.request(`${HOST}/auth/login`, {
     method: 'POST',
     data: {
-      email: process.env.ACCOUNT_EMAIL || '',
-      password: process.env.ACCOUNT_PASSWORD || '',
+      email: process.env.F_ACCOUNT_EMAIL || '',
+      password: process.env.F_ACCOUNT_PASSWORD || '',
     },
     dataType: 'json',
     contentType: 'json',

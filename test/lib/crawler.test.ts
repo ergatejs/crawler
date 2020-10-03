@@ -9,30 +9,57 @@ const baseDir = path.join(__dirname, '../data');
 
 dotenv.config();
 
+
 describe('crawler.test.ts', () => {
-  test.skip('support', async done => {
+
+  test('support', async done => {
     const strategy = strategies.getStrategy({
-      stock: 'TSLA',
       baseDir,
+      stock: 'TSLA',
       strategy: 'support',
     });
 
-    await crawler.screenshot(strategy);
+    const data = await crawler.load({
+      ...strategy,
+      proxy: process.env.RPOXY,
+    });
 
-    expect(fs.existsSync(strategy.targetPath)).toEqual(true);
+    expect(Array.isArray(data)).toEqual(true);
+
+    if (strategy.loaddata) {
+      expect(fs.existsSync(strategy.loaddata.target)).toEqual(true);
+    }
+
+    if (strategy.screenshot) {
+      expect(fs.existsSync(strategy.screenshot.target)).toEqual(true);
+    }
+
     done();
   }, timeout);
 
   test.skip('short', async done => {
     const strategy = strategies.getStrategy({
-      stock: 'TSLA',
       baseDir,
+      stock: 'TSLA',
       strategy: 'short',
     });
 
-    await crawler.screenshot(strategy);
+    const data = await crawler.load({
+      ...strategy,
+      proxy: process.env.RPOXY,
+    });
 
-    expect(fs.existsSync(strategy.targetPath)).toEqual(true);
+    expect(Array.isArray(data)).toEqual(true);
+
+    if (strategy.loaddata) {
+      expect(fs.existsSync(strategy.loaddata.target)).toEqual(true);
+    }
+
+    if (strategy.screenshot) {
+      expect(fs.existsSync(strategy.screenshot.target)).toEqual(true);
+    }
+
     done();
   }, timeout);
+
 });
