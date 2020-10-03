@@ -4,7 +4,7 @@ import urllib from 'urllib';
 const debug = Debug('@ergatejs/crawler');
 
 export const publish = async (data: any) => {
-  const HOST = process.env.F_ACCOUNT_HOST || 'https://f.implements.io';
+  const HOST = process.env.F_ACCOUNT_HOST || 'http://localhost:7001';
 
   const authResult = await urllib.request(`${HOST}/auth/login`, {
     method: 'POST',
