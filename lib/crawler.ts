@@ -82,7 +82,7 @@ export const load = async (options: LoadOption) => {
 
       await selector.screenshot({
         path: screenshot.target,
-        fullPage: true,
+        // fullPage: !(!!screenshot.selector),
       });
     }
 
