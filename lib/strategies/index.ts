@@ -21,11 +21,10 @@ export const getStrategy = (option: Options): LoadOption => {
 
       loaddata: {
         target: path.join(baseDir, `${targetStock}.support.${timestamps}.json`),
-
       },
 
       screenshot: {
-        selector: '#main',
+        selector: '#main-content-column > .column-inner',
         asset: path.join('assets', `${targetStock}.support.${timestamps}.png`),
         target: path.join(baseDir, `${targetStock}.support.${timestamps}.png`),
       },

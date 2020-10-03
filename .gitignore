@@ -92,7 +92,9 @@ typings/
 *.d.ts
 *.d.ts.map
 
-**/*.png
+## tests
+test/data/**/*.png
+test/data/**/*.json
 
 # lockfile
 yarn.lock

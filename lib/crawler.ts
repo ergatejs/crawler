@@ -48,10 +48,11 @@ export const load = async (options: LoadOption) => {
   try {
     const page = await browser.newPage();
 
-    page.on('console', msg => console.log(msg.text()));
+    // page.on('console', msg => console.log(msg.text()));
 
-    await page.goto(url, {
+    await page.goto(url, {      
       waitUntil: 'load',
+      // waitUntil: 'domcontentloaded',
       timeout: 0,
     });
 
@@ -69,7 +70,7 @@ export const load = async (options: LoadOption) => {
     const data = await dataHandle.jsonValue();
 
     debug('===data', data);
-
+    
     await execHandle.dispose();
     await dataHandle.dispose();
 
@@ -98,5 +99,6 @@ export const load = async (options: LoadOption) => {
   } catch (error) {
     debug('crawler.load.error', error);
     await browser.close();
+    return [];
   }
 };
