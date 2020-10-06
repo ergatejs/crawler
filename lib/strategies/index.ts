@@ -59,6 +59,7 @@ export const getStrategy = (option: Options): LoadOption => {
       url: 'https://app.fdscanner.com/unusualvolume',
       script: path.join(__dirname, '../script/unusualvolume.js'),
       api: 'https://app.fdscanner.com/api/voloi/voloi',
+      apiSelector: '.dataTables_wrapper',
     };
   }
 

@@ -23,10 +23,11 @@ export interface LoadOption {
 
   // api
   api?: any;
+  apiSelector?: string;
 }
 
 export const load = async (options: LoadOption) => {
-  const { url, script, proxy, screenshot, loaddata, api } = options;
+  const { url, script, proxy, screenshot, loaddata, api, apiSelector } = options;
 
   debug('===url', url);
 
@@ -104,6 +105,13 @@ export const load = async (options: LoadOption) => {
       if (loaddata.target) {
         fs.writeFileSync(loaddata.target, JSON.stringify(data, null, 2));
       }
+    }
+
+    // api
+    if(apiSelector) {
+      await page.waitForSelector(apiSelector, {
+        visible: true,
+      });
     }
 
     await browser.close();
