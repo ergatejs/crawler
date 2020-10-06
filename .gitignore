@@ -104,5 +104,4 @@ yarn.lock
 !.eslintrc.js
 
 # script
-!lib/script/short.js
-!lib/script/support.js
+!lib/script/*.js

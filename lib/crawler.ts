@@ -56,9 +56,8 @@ export const load = async (options: LoadOption) => {
 
     page.on('response', async response => {
       const url = response.url();
-      debug('===response.url', url);
-
       if (url === api) {
+        debug('===response.url', url);
         result = await response.json();
       }
     });
