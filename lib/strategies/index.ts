@@ -48,8 +48,8 @@ export const getStrategy = (option: Options): LoadOption => {
 
       screenshot: {
         selector: '#main',
-        asset: path.join('assets', `${targetStock}.support.${timestamps}.png`),
-        target: path.join(baseDir, `${targetStock}.support.${timestamps}.png`),
+        asset: path.join('assets', `${targetStock}.short.${timestamps}.png`),
+        target: path.join(baseDir, `${targetStock}.short.${timestamps}.png`),
       },
     };
   }
