@@ -20,10 +20,13 @@ export interface LoadOption {
     asset: string;
     target: string;
   };
+
+  // api
+  api?: any;
 }
 
 export const load = async (options: LoadOption) => {
-  const { url, script, proxy, screenshot, loaddata } = options;
+  const { url, script, proxy, screenshot, loaddata, api } = options;
 
   // launch args
   const args = [
@@ -33,12 +36,12 @@ export const load = async (options: LoadOption) => {
   if (proxy) {
     args.push(proxy);
   }
-
-  // launch
+  
   const browser = await puppeteer.launch({
     args,
     timeout: 0,
     headless: true,
+    // devtools: true,
     defaultViewport: {
       width: 1366,
       height: 768,
@@ -46,13 +49,22 @@ export const load = async (options: LoadOption) => {
   });
 
   try {
+
+    let result;
+
     const page = await browser.newPage();
 
-    // page.on('console', msg => console.log(msg.text()));
+    page.on('response', async response => {
+      const url = response.url();
+      debug('===response.url', url);
+
+      if (url === api) {
+        result = await response.json();
+      }
+    });
 
     await page.goto(url, {
-      waitUntil: 'load',
-      // waitUntil: 'domcontentloaded',
+      waitUntil: 'load',      
       timeout: 0,
     });
 
@@ -95,7 +107,7 @@ export const load = async (options: LoadOption) => {
 
     await browser.close();
 
-    return data;
+    return result || data;
   } catch (error) {
     debug('crawler.load.error', error);
     await browser.close();

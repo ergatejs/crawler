@@ -61,4 +61,20 @@ describe('crawler.test.ts', () => {
     done();
   }, timeout);
 
+  test.skip('unusualvolume', async done => {
+    const strategy = strategies.getStrategy({
+      baseDir,
+      stock: '',
+      strategy: 'unusualvolume',
+    });
+
+    const data = await crawler.load({
+      ...strategy,
+      proxy: process.env.RPOXY,
+    });
+
+    expect(typeof data).not.toEqual(undefined);
+
+    done();
+  }, timeout);
 });

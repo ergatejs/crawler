@@ -2,7 +2,7 @@ import path from 'path';
 import { LoadOption } from '../crawler';
 
 interface Options {
-  stock: string;
+  stock?: string;
   baseDir: string;
   strategy: string;
 }
@@ -13,6 +13,10 @@ export const getStrategy = (option: Options): LoadOption => {
   const timestamps = Date.now();
 
   if (strategy === 'support') {
+    if (!stock) {
+      throw (new Error('stock is required.'));
+    }
+
     const targetStock = stock.toUpperCase();
 
     return {
@@ -32,6 +36,9 @@ export const getStrategy = (option: Options): LoadOption => {
   }
 
   if (strategy === 'short') {
+    if (!stock) {
+      throw (new Error('stock is required.'));
+    }
 
     const targetStock = stock.toLocaleLowerCase();
 
@@ -44,6 +51,14 @@ export const getStrategy = (option: Options): LoadOption => {
         asset: path.join('assets', `${targetStock}.support.${timestamps}.json`),
         target: path.join(baseDir, `${targetStock}.support.${timestamps}.png`),
       },
+    };
+  }
+
+  if (strategy === 'unusualvolume') {
+    return {
+      url: 'https://app.fdscanner.com/unusualvolume',
+      script: path.join(__dirname, '../script/unusualvolume.js'),
+      api: 'https://app.fdscanner.com/api/voloi/voloi',
     };
   }
 

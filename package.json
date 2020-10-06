@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "crawler for etf",
   "main": "index.js",
-  "scripts": {    
+  "scripts": {
     "build": "tsc",
     "ci": "npm run test",
     "dev": "tsc -w",
@@ -17,7 +17,7 @@
     "ali-oss": "^6.10.0",
     "dayjs": "^1.9.1",
     "debug": "^4.2.0",
-    "dotenv": "^8.2.0",
+    "dotenv": "^8.2.0",    
     "puppeteer": "^5.3.1",
     "urllib": "^2.36.1",
     "xlsx": "^0.16.7"

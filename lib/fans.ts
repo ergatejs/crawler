@@ -3,9 +3,8 @@ import urllib from 'urllib';
 
 const debug = Debug('@ergatejs/crawler');
 
-export const publish = async (data: any) => {
+const auth = () => {
   const HOST = process.env.F_ACCOUNT_HOST || 'http://localhost:7001';
-
   const authResult = await urllib.request(`${HOST}/auth/login`, {
     method: 'POST',
     data: {
@@ -17,13 +16,20 @@ export const publish = async (data: any) => {
   });
 
   debug('authResult', authResult);
+
+  return authResult;
+};
+
+export const publishPost = async (data: any) => {
+  const authResult = await auth();
   const { data: { token } } = authResult.data;
 
   if (!token) {
     return;
   }
 
-  const publishResult = await urllib.request(`${HOST}/api/post/create`, {
+  const HOST = process.env.F_ACCOUNT_HOST || 'http://localhost:7001';
+  const result = await urllib.request(`${HOST}/api/post/create`, {
     data,
     method: 'POST',
     dataType: 'json',
@@ -33,6 +39,29 @@ export const publish = async (data: any) => {
     },
   });
 
-  debug('publishResult', publishResult);
-  return publishResult;
+  debug('result', result);
+  return result;
+};
+
+export const updateUnusualVolume = async (data: any) => {
+  const authResult = await auth();
+  const { data: { token } } = authResult.data;
+
+  if (!token) {
+    return;
+  }
+
+  const HOST = process.env.F_ACCOUNT_HOST || 'http://localhost:7001';
+  const result = await urllib.request(`${HOST}/api/trade/updateUnusualVolume`, {
+    data,
+    method: 'POST',
+    dataType: 'json',
+    contentType: 'json',
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+  });
+
+  debug('result', result);
+  return result;
 };

@@ -9,7 +9,7 @@ const timeout = 5 * 60 * 1000;
 const baseDir = path.join(__dirname, 'data');
 
 describe('index.test.ts', () => {
-  test('Resistance & Support Point', async done => {
+  test.skip('Resistance & Support Point', async done => {
     const run = async (stock: string) => {
       const strategy = strategies.getStrategy({
         stock,
@@ -26,7 +26,7 @@ describe('index.test.ts', () => {
           tag_id: 'd6c6af85-9a2e-4ae5-87b1-eb16c141ff43',
           content: `![](${assetUrl})`,
         };
-        await fans.publish(postData);
+        await fans.publishPost(postData);
       }
     };
 
@@ -54,12 +54,29 @@ describe('index.test.ts', () => {
           tag_id: 'd6c6af85-9a2e-4ae5-87b1-eb16c141ff43',
           content: `![](${assetUrl})`,
         };
-        await fans.publish(postData);
+        await fans.publishPost(postData);
       }
     };
 
     await run('AMZN');
     await run('TSLA');
+
+    done();
+  }, timeout);
+
+  test('Unusual Volume', async done => {
+    const strategy = strategies.getStrategy({      
+      baseDir,
+      strategy: 'unusualvolume',
+    });
+
+    const data = await crawler.load(strategy);
+
+    if (data) {
+      await fans.updateUnusualVolume({
+        data,
+      });
+    }
 
     done();
   }, timeout);
