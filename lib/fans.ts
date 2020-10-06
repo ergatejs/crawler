@@ -3,7 +3,7 @@ import urllib from 'urllib';
 
 const debug = Debug('@ergatejs/crawler');
 
-const auth = () => {
+const auth = async () => {
   const HOST = process.env.F_ACCOUNT_HOST || 'http://localhost:7001';
   const authResult = await urllib.request(`${HOST}/auth/login`, {
     method: 'POST',
