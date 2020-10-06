@@ -28,6 +28,8 @@ export interface LoadOption {
 export const load = async (options: LoadOption) => {
   const { url, script, proxy, screenshot, loaddata, api } = options;
 
+  debug('===url', url);
+
   // launch args
   const args = [
     '--start-fullscree',
@@ -53,13 +55,13 @@ export const load = async (options: LoadOption) => {
     let result;
 
     const page = await browser.newPage();
+    await page.setJavaScriptEnabled(true);
 
     page.on('response', async response => {
-      const url = response.url();
-      if (url.includes(api)) {
-        debug('===response.url', url);
-        result = await response.json();
-        // debug('===response.result', result);
+      const responseUrl = response.url();
+      if (responseUrl.includes(api)) {        
+        debug('===responseUrl', responseUrl);
+        result = await response.json();        
       }
     });
 
