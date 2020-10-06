@@ -15,7 +15,7 @@ const auth = async () => {
     contentType: 'json',
   });
 
-  debug('authResult', authResult);
+  // debug('authResult', authResult);
 
   return authResult;
 };

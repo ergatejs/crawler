@@ -56,9 +56,10 @@ export const load = async (options: LoadOption) => {
 
     page.on('response', async response => {
       const url = response.url();
-      if (url === api) {
+      if (url.includes(api)) {
         debug('===response.url', url);
         result = await response.json();
+        // debug('===response.result', result);
       }
     });
 
@@ -69,7 +70,7 @@ export const load = async (options: LoadOption) => {
 
     // add custom script
     const content = fs.readFileSync(script).toString();
-    debug('===content', content);
+    // debug('===content', content);
 
     await page.addScriptTag({
       content,
@@ -92,8 +93,7 @@ export const load = async (options: LoadOption) => {
       if (!selector) return;
 
       await selector.screenshot({
-        path: screenshot.target,
-        // fullPage: !(!!screenshot.selector),
+        path: screenshot.target,        
       });
     }
 
@@ -106,7 +106,9 @@ export const load = async (options: LoadOption) => {
 
     await browser.close();
 
-    return result || data;
+    debug('===result', result);
+
+    return api ? result : data;
   } catch (error) {
     debug('crawler.load.error', error);
     await browser.close();

@@ -70,8 +70,11 @@ describe('index.test.ts', () => {
       strategy: 'unusualvolume',
     });
 
-    const data = await crawler.load(strategy);
-
+    const data = await crawler.load({
+      ...strategy,
+      // proxy: '--proxy-server=http://127.0.0.1:1087',
+    });
+    
     if (data) {
       await fans.updateUnusualVolume({
         data,
