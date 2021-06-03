@@ -37,7 +37,7 @@ describe('index.test.ts', () => {
   }, timeout);
 
 
-  test('Short Volumes', async done => {
+  test.skip('Short Volumes', async done => {
     const run = async (stock: string) => {
       const strategy = strategies.getStrategy({
         stock,
@@ -64,7 +64,7 @@ describe('index.test.ts', () => {
     done();
   }, timeout);
 
-  test('Unusual Volume', async done => {
+  test.skip('Unusual Volume', async done => {
     const strategy = strategies.getStrategy({      
       baseDir,
       strategy: 'unusualvolume',
